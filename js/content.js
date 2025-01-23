@@ -2078,7 +2078,31 @@ function formatTodoDate(date, submissions, hr24, dayOfWeek) {
     if (submissions && submissions.submitted === false && ms >= -21600000) {
         dueSoon = true;
     }
-    return { "dueSoon": dueSoon, "date": (dayOfWeek ? days[date.getDay()] + ", " : "") + months[date.getMonth()] + " " + date.getDate() + " at " + (date.getHours() - (hr24 ? "" : date.getHours() > 12 ? 12 : 0)) + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes() + (hr24 ? "" : date.getHours() >= 12 ? "pm" : "am") + " (" + fromNow + ")" };
+
+    const dayFormatted = (() => {
+        const dayNameShort = days[date.getDay()];
+        switch (dayNameShort) {
+            case "Sun": return "Sunday";
+            case "Mon": return "Monday";
+            case "Tue": return "Tuesday";
+            case "Wed": return "Wednesday";
+            case "Thu": return "Thursday";
+            case "Fri": return "Friday";
+            case "Sat": return "Saturday";
+            default: return "FIXME";
+        }
+    })();
+
+    const timeFormatted = `${
+      date.getHours() - (date.getHours() > 12 ? 12 : 0)
+    }:${date.getMinutes()}${date.getHours() >= 12 ? "pm" : "am"}`;
+
+    return {
+      dueSoon: dueSoon,
+      date: `${dayFormatted} (${
+        months[date.getMonth()]
+      } ${date.getDate()}) at ${timeFormatted}`,
+    };
 }
 
 function formatCardDue(date) {
