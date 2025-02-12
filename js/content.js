@@ -2080,6 +2080,21 @@ function formatTodoDate(date, submissions, hr24, dayOfWeek) {
     }
 
     const dayFormatted = (() => {
+        const getIsSameDay = (l, r) =>
+          l.getDate() === r.getDate() &&
+          l.getMonth() === r.getMonth() &&
+          l.getFullYear() === r.getFullYear();
+
+        const dateToday = new Date();
+        const dateTomorrow = new Date();
+        dateTomorrow.setDate(dateToday.getDate() + 1);
+
+        if (getIsSameDay(date, dateToday)) {
+          return "Today";
+        } else if (getIsSameDay(date, dateTomorrow)) {
+          return "Tomorrow";
+        }
+
         const dayNameShort = days[date.getDay()];
         switch (dayNameShort) {
             case "Sun": return "Sunday";
@@ -2095,7 +2110,7 @@ function formatTodoDate(date, submissions, hr24, dayOfWeek) {
 
     const timeFormatted = `${
       date.getHours() - (date.getHours() > 12 ? 12 : 0)
-    }:${date.getMinutes()}${date.getHours() >= 12 ? "pm" : "am"}`;
+    }:${date.getMinutes().toString().padStart(2, "0")}${date.getHours() >= 12 ? "pm" : "am"}`;
 
     return {
       dueSoon: dueSoon,
